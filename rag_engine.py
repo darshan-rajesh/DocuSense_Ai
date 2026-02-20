@@ -49,23 +49,23 @@ generator = pipeline(
 # ANSWER FUNCTION
 # ==========================
 def answer_query(query):
-    # 1️⃣ Load FAISS index
+    # 1️ Load FAISS index
     index = faiss.read_index("vector_store/index.faiss")
 
-    # 2️⃣ Load stored chunks
+    # 2️ Load stored chunks
     with open("vector_store/chunks.pkl", "rb") as f:
         chunks = pickle.load(f)
 
-    # 3️⃣ Embed query
+    # 3️ Embed query
     query_embedding = embed_model.encode([query], normalize_embeddings=True)
     query_embedding = np.array(query_embedding).astype("float32")
 
-    # 4️⃣ Retrieve TOP 1 chunk (faster)
+    # 4️ Retrieve TOP 1 chunk (faster)
     distances, indices = index.search(query_embedding, 1)
 
     retrieved_chunk = chunks[indices[0][0]]
 
-    # 5️⃣ Build compact prompt (smaller = faster)
+    # 5️ Build compact prompt (smaller = faster)
     prompt = f"""
 Answer the question based only on the context below.
 
